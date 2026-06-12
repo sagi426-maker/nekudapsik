@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# דומיין: nekuda-psik.com
+Sitemap: https://nekuda-psik.com/sitemap.xml

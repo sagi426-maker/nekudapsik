@@ -1,0 +1,25 @@
+# הגדרות פריסה ל-Netlify — בלוג "נקודה פסיק"
+# אתר HTML סטטי: אין שלב build, פשוט מגישים את הקבצים מהשורש.
+
+[build]
+  publish = "."
+  command = ""
+
+# הפניית כל שגיאת 404 לעמוד מותאם
+[[redirects]]
+  from = "/*"
+  to = "/404.html"
+  status = 404
+
+# כותרות אבטחה ו-cache בסיסיות
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/*.svg"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
