@@ -286,6 +286,22 @@ footer {
   color: var(--muted);
 }
 
+footer p {
+  margin-bottom: 4px;
+}
+
+.footer-name {
+  color: var(--text);
+}
+
+/* Home CTA (above the footer) */
+.home-cta {
+  margin-top: 64px;
+  margin-bottom: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
 .footer-brand {
   display: flex;
   align-items: center;
