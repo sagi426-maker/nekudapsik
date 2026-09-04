@@ -9,6 +9,7 @@
   --text: #d1d1d1;
   --muted: #6b6b6b;
   --sep: #1e1e1e;
+  --accent: #b98a63;
 }
 
 body {
@@ -315,6 +316,81 @@ footer p {
 
 .footer-mark {
   height: 17px;
+}
+
+/* Lab (מעבדה) */
+.lab-section {
+  margin-top: 56px;
+}
+
+.lab-list {
+  list-style: none;
+}
+
+.lab-item {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--sep);
+}
+
+.lab-item:first-child {
+  padding-top: 4px;
+}
+
+.lab-item:last-child {
+  border-bottom: none;
+}
+
+.lab-item h2 {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.lab-item h2 a {
+  text-decoration: none;
+}
+
+.lab-item h2 a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.lab-item p {
+  margin-bottom: 8px;
+}
+
+.lab-item p:last-child {
+  margin-bottom: 0;
+}
+
+.lab-meta {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* App CTA */
+.app-cta-wrap {
+  margin: 2.5em 0 0.6em;
+}
+
+.app-cta {
+  display: inline-block;
+  padding: 13px 26px;
+  border: 1px solid var(--accent);
+  color: var(--text);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.app-cta:hover {
+  background: var(--accent);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.cta-note {
+  margin-bottom: 2.5em;
 }
 
 /* Mobile */
