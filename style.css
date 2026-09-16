@@ -409,3 +409,24 @@ footer p {
     padding-top: 48px;
   }
 }
+
+.post-body blockquote {
+  border-right: 2px solid var(--sep);
+  padding: 4px 16px 4px 0;
+  margin: 0 0 1.5em 0;
+  color: var(--text);
+}
+
+.post-body blockquote p {
+  margin-bottom: 0.75em;
+}
+
+.post-body blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--sep);
+  margin: 2em 0;
+}
