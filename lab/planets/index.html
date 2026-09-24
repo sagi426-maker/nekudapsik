@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>הכוכבים של הבית</title>
+<meta name="description" content="השמש, כוכבי הלכת והירח בצילומים אמיתיים, עם השוואת גדלים ומשחק זיהוי לילדים שעוד לא קוראים.">
+<meta property="og:title" content="הכוכבים של הבית">
+<meta property="og:description" content="מפת כוכבי לכת לילדים: צילומים אמיתיים, גדלים אמיתיים ומשחק התאמה.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://nekuda-psik.com/lab/planets/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta property="og:url" content="https://nekuda-psik.com/lab/planets/">
+<meta property="og:image" content="https://nekuda-psik.com/lab/planets/preview.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Varela+Round&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --sky:#0b1026; --sky2:#141a3d; --ink:#f3f1ff; --muted:#a9acd6;
+  --line:#2a3163; --gold:#ffcc4d; --ok:#5fd68a; --no:#ff7a7a;
+}
+html{background:var(--sky)}
+body{
+  background:
+    radial-gradient(1px 1px at 12% 20%,#fff9 50%,transparent),
+    radial-gradient(1px 1px at 78% 12%,#fff8 50%,transparent),
+    radial-gradient(1.5px 1.5px at 40% 70%,#fffa 50%,transparent),
+    radial-gradient(1px 1px at 90% 60%,#fff7 50%,transparent),
+    radial-gradient(1px 1px at 22% 88%,#fff8 50%,transparent),
+    radial-gradient(1.5px 1.5px at 60% 35%,#fff9 50%,transparent),
+    linear-gradient(180deg,var(--sky),var(--sky2));
+  background-attachment:fixed;
+  color:var(--ink); font-family:"Varela Round","Arial Hebrew",Arial,sans-serif; font-size:17px;
+  padding:20px 16px 40px; min-height:100vh; box-sizing:border-box;
+}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1{font-family:"Secular One","Arial Hebrew",sans-serif;font-weight:400;font-size:clamp(28px,7vw,40px);margin:0;text-wrap:balance}
+h3{font-family:"Secular One",sans-serif;font-weight:400;font-size:24px;margin:0}
+.sub{color:var(--muted);margin:4px 0 0}
+.modes{display:flex;gap:8px}
+.modes button{flex:1;font:inherit;padding:12px;border-radius:999px;border:2px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.modes button[aria-pressed="true"]{background:var(--gold);color:#1b1640;border-color:var(--gold)}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+.stage{display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 12px;border:2px solid var(--line);border-radius:28px;background:#0e1433cc;text-align:center;min-height:360px;justify-content:center}
+.stage .big{width:min(48vw,180px);height:min(48vw,180px)}
+.stage h2{font-family:"Secular One",sans-serif;font-weight:400;font-size:clamp(36px,10vw,56px);margin:0;line-height:1}
+.stage p{margin:0;max-width:34ch;line-height:1.6;color:var(--muted)}
+.order{font-size:14px;letter-spacing:.04em;color:var(--gold)}
+.size{font-size:16px;color:var(--ink);background:#ffffff14;border-radius:999px;padding:6px 14px}
+.say{font:inherit;font-size:18px;padding:10px 22px;border-radius:999px;border:none;background:var(--gold);color:#1b1640;cursor:pointer}
+.feedback{font-family:"Secular One",sans-serif;font-size:26px;min-height:1.3em}
+.feedback.ok{color:var(--ok)} .feedback.no{color:var(--no)}
+.big-mark{font-size:54px;line-height:1}
+.tile.right{border-color:var(--ok)}
+.tile.wrong{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.tile{font:inherit;color:var(--ink);background:transparent;border:2px solid transparent;border-radius:18px;padding:10px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:transform .15s,border-color .15s}
+.tile:hover{transform:translateY(-3px)}
+.tile.sel{border-color:var(--gold)}
+.tile .p{width:min(60px,13vw);height:min(60px,13vw)}
+.tile span{font-size:14px;line-height:1.2}
+.quiz .tile span{visibility:hidden}
+
+.scale{display:flex;flex-direction:column;gap:8px}
+.scale .sub{margin:0;font-size:15px}
+.strip-wrap{overflow-x:auto;border:2px solid var(--line);border-radius:22px;background:#0e1433cc;-webkit-overflow-scrolling:touch}
+.strip{display:flex;align-items:stretch;gap:10px;padding-inline-end:16px;width:max-content}
+.s{font:inherit;color:var(--ink);background:transparent;border:none;padding:0 4px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;min-width:44px}
+.s .box{height:250px;display:flex;align-items:center;justify-content:center}
+.s span{font-size:13px;white-space:nowrap}
+.s.sel span{color:var(--gold)}
+.s.sat{padding-inline:40px}
+.sunedge{position:relative;width:56px;overflow:hidden;flex:none;padding:0}
+.sunedge .huge{position:absolute;top:125px;left:0;transform:translateY(-50%)}
+.sunedge span{position:absolute;bottom:12px;right:6px;left:0;text-align:center;color:#1b1640;font-size:13px;z-index:2}
+.note{color:var(--muted);font-size:13px;margin:0}
+
+/* planets: NASA/ESA photos via Wikimedia Commons */
+.p{position:relative;border-radius:50%;flex:none;background:center/contain no-repeat}
+.sun{box-shadow:0 0 28px 4px #ffb23a77}
+.sun{background-image:url(img/sun.webp)}
+.mercury{background-image:url(img/mercury.webp)}
+.venus{background-image:url(img/venus.webp)}
+.earth{background-image:url(img/earth.webp)}
+.moon{background-image:url(img/moon.webp)}
+.mars{background-image:url(img/mars.webp)}
+.jupiter{background-image:url(img/jupiter.webp)}
+.uranus{background-image:url(img/uranus.webp)}
+.neptune{background-image:url(img/neptune.webp)}
+.saturn{border-radius:0}
+.tile .saturn{transform:scale(.45)}
+.big.saturn{transform:scale(.68)}
+.saturn::before{content:"";position:absolute;top:-1.2%;bottom:-1.2%;left:-72.0%;right:-72.0%;background:url(img/saturn.webp) center/100% 100% no-repeat}
+@media (prefers-reduced-motion:reduce){.tile{transition:none}.tile.wrong{animation:none}}
+.back{display:inline-block;color:var(--muted);font-size:14px;margin-bottom:10px;text-decoration:none}
+.back:hover{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap" dir="rtl" lang="he">
+  <header>
+    <a class="back" href="../">חזרה למעבדה</a>
+    <h1>הכוכבים של הבית</h1>
+    <p class="sub">השמש, כוכבי הלכת והירח שלנו, לפי הסדר</p>
+  </header>
+
+  <div class="modes" role="group" aria-label="מצב">
+    <button id="m-learn" aria-pressed="true">מכירים</button>
+    <button id="m-quiz" aria-pressed="false">משחק</button>
+  </div>
+
+  <section class="stage" id="stage" aria-live="polite"></section>
+
+  <div class="grid" id="grid"></div>
+
+  <section class="scale">
+    <h3>מי יותר גדול?</h3>
+    <p class="sub">כאן הגדלים אמיתיים, ביחס אחד לשני. גוללים הצידה כדי לראות את כולם.</p>
+    <div class="strip-wrap"><div class="strip" id="strip"></div></div>
+    <p class="note">השמש רחבה כמעט פי 10 מצדק, אז היא לא נכנסת למסך. רואים רק את הקצה שלה בצד ימין. המרחקים בין הכוכבים לא לפי המציאות, רק הגדלים.</p>
+  </section>
+  <p class="note">תמונות: NASA, ESA והאבל דרך Wikimedia Commons. הירח: Gregory H. Revera (CC BY-SA). מאדים: ESA/MPS/OSIRIS (CC BY-SA IGO).</p>
+</div>
+
+<script>const CLIPS={"sun":"audio/sun.mp3","mercury":"audio/mercury.mp3","venus":"audio/venus.mp3","earth":"audio/earth.mp3","moon":"audio/moon.mp3","mars":"audio/mars.mp3","jupiter":"audio/jupiter.mp3","saturn":"audio/saturn.mp3","uranus":"audio/uranus.mp3","neptune":"audio/neptune.mp3"};</script>
+<script>
+// d = קוטר בק"מ (נאס"א, בעיגול)
+const P=[
+ {k:"sun",n:"השמש",d:1392700,o:"כוכב, לא כוכב לכת",z:"רחבה פי 109 מכדור הארץ",f:"השמש היא כוכב, בדיוק כמו הנקודות שרואים בלילה, רק הכי קרובה אלינו. כל כוכבי הלכת מסתובבים סביבה."},
+ {k:"mercury",n:"כוכב חמה",d:4879,o:"מקום 1 מהשמש",z:"בערך שליש מכדור הארץ",f:"הכי קטן והכי קרוב לשמש. הוא מסיים סיבוב סביב השמש ב-88 ימים בלבד."},
+ {k:"venus",n:"נוגה",d:12104,o:"מקום 2 מהשמש",z:"כמעט בדיוק בגודל של כדור הארץ",f:"הכי חם מכולם, מכוסה עננים עבים. לפעמים רואים אותו בערב כנקודה הכי בוהקת בשמיים."},
+ {k:"earth",n:"כדור הארץ",d:12742,o:"מקום 3 מהשמש",z:"רוחב: 12,742 ק״מ",f:"הבית שלנו! יש בו ים, יבשה, אוויר לנשום ועצים. יש לו ירח אחד."},
+ {k:"moon",n:"הירח",d:3474,o:"הירח של כדור הארץ",z:"בערך רבע מכדור הארץ",f:"הירח מסתובב סביב כדור הארץ. הוא לא מאיר בעצמו: האור שלו הוא אור של השמש שחוזר ממנו אלינו."},
+ {k:"mars",n:"מאדים",d:6779,o:"מקום 4 מהשמש",z:"בערך חצי מכדור הארץ",f:"כוכב הלכת האדום. האדמה שלו אדומה כמו חלודה. יש לו שני ירחים קטנטנים."},
+ {k:"jupiter",n:"צדק",d:139820,o:"מקום 5 מהשמש",z:"רחב פי 11 מכדור הארץ",f:"הכי גדול מכל כוכבי הלכת. הכתם האדום שלו הוא סופה ענקית, גדולה יותר מכל כדור הארץ."},
+ {k:"saturn",n:"שבתאי",d:116460,o:"מקום 6 מהשמש",z:"רחב פי 9 מכדור הארץ, בלי הטבעות",f:"זה עם הטבעות! הטבעות עשויות מהמון חתיכות קרח ואבן שמסתובבות סביבו."},
+ {k:"uranus",n:"אורנוס",d:50724,o:"מקום 7 מהשמש",z:"רחב פי 4 מכדור הארץ",f:"צבע תכלת-ירקרק, והוא מסתובב שוכב על הצד, כמו כדור שמתגלגל."},
+ {k:"neptune",n:"נפטון",d:49244,o:"מקום 8 מהשמש",z:"רחב פי 4 מכדור הארץ",f:"הכי רחוק מהשמש, כחול וקר מאוד. יש בו את הרוחות הכי חזקות."}
+];
+const JUP=240; // צדק = 240 פיקסלים
+const px=d=>Math.max(d/139820*JUP,3);
+
+const stage=document.getElementById("stage"),grid=document.getElementById("grid"),strip=document.getElementById("strip");
+let mode="learn",sel=3,target=null;
+
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang="he-IL";u.rate=.85;speechSynthesis.speak(u)}catch(e){}}
+// הקלטות של אבא; אם אין הקלטה - קול מובנה
+const AUD={};for(const k in (typeof CLIPS!=="undefined"?CLIPS:{})){AUD[k]=new Audio(CLIPS[k]);AUD[k].preload="auto"}
+let cur=null;
+function sayName(i){
+  const p=P[i],a=AUD[p.k];
+  try{speechSynthesis.cancel()}catch(e){}
+  if(cur){cur.pause();cur.currentTime=0}
+  if(a){cur=a;a.currentTime=0;a.play().catch(()=>speak(p.n))}else speak(p.n);
+}
+
+function pick(i){mode==="learn"?show(i,true):guess(i)}
+
+P.forEach((p,i)=>{
+  const b=document.createElement("button");b.className="tile";
+  b.innerHTML=`<div class="p ${p.k}"></div><span>${p.n}</span>`;
+  b.setAttribute("aria-label",p.n);b.onclick=()=>pick(i);
+  grid.appendChild(b);
+
+  const s=document.createElement("button");s.setAttribute("aria-label",p.n+" בגודל אמיתי");
+  if(p.k==="sun"){
+    const w=px(p.d);
+    s.className="s sunedge";
+    s.innerHTML=`<div class="p sun huge" style="width:${w}px;height:${w}px"></div><span>השמש</span>`;
+  }else{
+    const w=px(p.d);
+    s.className="s"+(p.k==="saturn"?" sat":"");
+    s.innerHTML=`<div class="box"><div class="p ${p.k}" style="width:${w}px;height:${w}px"></div></div><span>${p.n}</span>`;
+  }
+  s.onclick=()=>{if(mode!=="learn")setMode("learn");show(i,true);stage.scrollIntoView({behavior:"smooth",block:"center"})};
+  strip.appendChild(s);
+});
+
+function mark(){
+  [...grid.children].forEach((c,i)=>c.classList.toggle("sel",mode==="learn"&&i===sel));
+  [...strip.children].forEach((c,i)=>c.classList.toggle("sel",i===sel));
+}
+
+function show(i,talk){
+  sel=i;const p=P[i];
+  stage.innerHTML=`<div class="p big ${p.k}"></div><div class="order">${p.o}</div><h2>${p.n}</h2><div class="size">${p.z}</div><p>${p.f}</p><button class="say" id="say">🔊 תגידי לי</button>`;
+  document.getElementById("say").onclick=()=>speak(p.n+". "+p.z+". "+p.f);
+  mark(); if(talk) sayName(i);
+}
+
+function newQ(){
+  let t;do{t=Math.floor(Math.random()*P.length)}while(t===target);target=t;
+  stage.innerHTML=`<div class="p big ${P[t].k}" id="qimg"></div><div class="feedback" id="fb" aria-live="polite">👇</div><div class="order">מצאי למטה את אותו כוכב</div>`;
+  [...grid.children].forEach(c=>c.classList.remove("wrong","right"));
+}
+function guess(i){
+  const fb=document.getElementById("fb"),tile=grid.children[i];
+  if(i===target){
+    fb.className="feedback ok big-mark";fb.textContent="✓";tile.classList.add("right");sayName(i);
+    setTimeout(()=>{if(mode==="quiz")newQ()},2200);
+  }else{
+    fb.className="feedback no big-mark";fb.textContent="✗";
+    tile.classList.remove("wrong");void tile.offsetWidth;tile.classList.add("wrong");
+  }
+}
+
+function setMode(m){
+  mode=m;document.getElementById("m-learn").setAttribute("aria-pressed",m==="learn");
+  document.getElementById("m-quiz").setAttribute("aria-pressed",m==="quiz");
+  grid.classList.toggle("quiz",m==="quiz");
+  if(m==="learn")show(sel,false);else{newQ()}
+  mark();
+}
+document.getElementById("m-learn").onclick=()=>setMode("learn");
+document.getElementById("m-quiz").onclick=()=>setMode("quiz");
+show(3,false);
+</script>
+</body>
+</html>
