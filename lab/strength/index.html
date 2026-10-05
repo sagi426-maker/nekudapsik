@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>כוח, 10 דקות - נקודה פסיק</title>
+<meta name="description" content="עשר דקות כוח מיד בסוף הריצה: ארבעה תרגילים, מונה חזרות, טיימר לפלאנק וקצב ירידה. בלי הרשמה, הכל נשמר בדפדפן.">
+<link rel="canonical" href="https://nekuda-psik.com/lab/strength/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="כוח, 10 דקות">
+<meta property="og:description" content="ארבעה תרגילים בסוף הריצה, עם מונה חזרות וטיימר. בלי הרשמה.">
+<meta property="og:locale" content="he_IL">
+<meta property="og:url" content="https://nekuda-psik.com/lab/strength/">
+<meta property="og:image" content="https://nekuda-psik.com/og-image.png">
+<meta name="theme-color" content="#E8EBE8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111A1C" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="כוח">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏋️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700&family=Secular+One&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#E8EBE8; --surface:#F6F7F5; --ink:#16262B; --muted:#56666A; --line:#C7CFCC;
+  --signal:#F2B705; --signal-ink:#16262B; --done:#1E7A5A; --done-soft:#D8EDE3;
+  --display:"Secular One","Assistant",Arial,sans-serif;
+  --body:"Assistant",Arial,"Segoe UI",sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#111A1C; --surface:#1A2427; --ink:#E4EBE9; --muted:#93A3A6; --line:#2D3B3E;
+    --done:#4DBB8F; --done-soft:#1D3A30;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#111A1C; --surface:#1A2427; --ink:#E4EBE9; --muted:#93A3A6; --line:#2D3B3E;
+  --done:#4DBB8F; --done-soft:#1D3A30;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-tap-highlight-color:transparent}
+main{max-width:620px;margin:0 auto;padding:20px 16px 120px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible,textarea:focus-visible{outline:3px solid var(--signal);outline-offset:2px}
+
+.top h1{font-family:var(--display);font-weight:400;font-size:clamp(2.1rem,9vw,3rem);line-height:1.05;margin:4px 0 10px}
+.top .date{color:var(--muted);font-weight:600;margin:0}
+.top .rule{margin:12px 0 0;color:var(--muted);font-size:.95rem}
+
+.ex{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 16px;margin-top:18px}
+.ex[data-state="done"]{border-color:var(--done)}
+.ex header{display:flex;gap:12px;align-items:flex-start}
+.num{font-family:var(--display);font-size:2.2rem;line-height:1;min-width:1.2em;color:var(--muted)}
+.ex[data-state="active"] .num{color:var(--ink)}
+.ex[data-state="done"] .num{color:var(--done)}
+.ex h2{font-size:1.25rem;margin:0;line-height:1.25}
+.dose{margin:2px 0 0;font-weight:700}
+.tag{margin-inline-start:auto;font-size:.85rem;color:var(--muted);direction:ltr}
+.focus{margin:10px 0 0;color:var(--muted)}
+
+details{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+summary{font-weight:700;cursor:pointer;padding:4px 0}
+details ol,details ul{padding-inline-start:1.3em;margin:8px 0}
+details li{margin-bottom:6px}
+details h3{font-size:1rem;margin:14px 0 4px}
+.why{background:var(--bg);border-radius:10px;padding:10px 12px;margin:12px 0 4px;font-size:.95rem}
+
+.tempo{margin-top:12px}
+.tempo-btn{width:100%;border:1px solid var(--line);background:transparent;border-radius:10px;padding:10px;font-weight:700}
+.tempo-box{display:none;margin-top:8px;border-radius:10px;background:var(--bg);padding:12px;text-align:center}
+.tempo-box.on{display:block}
+.tempo-word{font-family:var(--display);font-size:1.8rem;line-height:1.2}
+.tempo-bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:8px}
+.tempo-fill{height:100%;width:0;background:var(--signal)}
+
+.sets{margin-top:14px;display:grid;gap:10px}
+.set{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line)}
+.set.cur{border:2px solid var(--signal);box-shadow:inset 6px 0 0 var(--signal)}
+.set.done{background:var(--done-soft);border-color:transparent}
+.set-label{font-weight:700;white-space:nowrap}
+.stepper{display:flex;align-items:center;justify-content:center;gap:6px}
+.stepper button{width:52px;height:52px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:1.6rem;line-height:1}
+.stepper output{font-family:var(--display);font-size:2rem;min-width:2ch;text-align:center}
+.go{height:52px;border:0;border-radius:12px;padding:0 14px;background:var(--ink);color:var(--bg);font-weight:700}
+.set.cur .go{background:var(--signal);color:var(--signal-ink)}
+.done-val{font-family:var(--display);font-size:1.8rem;text-align:center;color:var(--done)}
+.undo{border:0;background:transparent;color:var(--muted);text-decoration:underline;padding:8px}
+.sides{display:flex;gap:8px;grid-column:2 / 4}
+.side{flex:1;height:56px;border-radius:12px;border:1px solid var(--line);background:var(--bg);font-weight:700}
+.side.rec{background:var(--done-soft);border-color:transparent;color:var(--done)}
+.set.cur .side:not(.rec){border:2px solid var(--signal)}
+
+.feel{margin-top:14px}
+.feel p{margin:0 0 6px;font-weight:700}
+.chips{display:flex;gap:8px}
+.chip{flex:1;height:48px;border-radius:24px;border:1px solid var(--line);background:transparent;font-weight:700}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+
+.summary{margin-top:28px}
+.summary h2{font-family:var(--display);font-weight:400;font-size:1.8rem;margin:0 0 6px}
+.summary p{margin:0 0 10px;color:var(--muted)}
+textarea{width:100%;min-height:92px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;padding:12px;direction:rtl;resize:vertical}
+.row{display:flex;gap:10px;margin-top:10px}
+.big{flex:1;height:54px;border-radius:12px;border:0;background:var(--ink);color:var(--bg);font-weight:700}
+.ghost{flex:0 0 auto;height:54px;border-radius:12px;border:1px solid var(--line);background:transparent;padding:0 16px;font-weight:700}
+.reminders{margin-top:16px;padding-inline-start:1.2em;color:var(--muted)}
+
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 16px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px))}
+.bar-in{max-width:620px;margin:0 auto;display:flex;align-items:center;gap:14px}
+.prog{flex:1;height:10px;background:var(--line);border-radius:5px;overflow:hidden}
+.prog-fill{height:100%;background:var(--done);width:0;transition:width .3s}
+.bar-txt{font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.bar-rest{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+.overlay{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;padding-top:calc(24px + env(safe-area-inset-top,0px));padding-bottom:calc(24px + env(safe-area-inset-bottom,0px));text-align:center;z-index:10}
+.overlay.on{display:flex}
+.ov-phase{font-size:1.3rem;font-weight:700;color:var(--muted)}
+.ov-sec{font-family:var(--display);font-size:min(42vw,11rem);line-height:1;font-variant-numeric:tabular-nums}
+.ov-side{font-size:1.2rem;font-weight:700}
+.ov-stop{margin-top:20px;height:60px;min-width:220px;border-radius:30px;border:0;background:var(--ink);color:var(--bg);font-weight:700;font-size:1.1rem}
+.overlay.hold .ov-sec{color:var(--ink)}
+.overlay.prep .ov-sec{color:var(--muted)}
+
+@media (prefers-reduced-motion:reduce){.prog-fill{transition:none}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+
+<div class="bar" aria-live="polite">
+  <div class="bar-in">
+    <span class="bar-txt" id="barTxt">0/11 סטים</span>
+    <div class="prog"><div class="prog-fill" id="progFill"></div></div>
+    <span class="bar-rest" id="barRest"></span>
+  </div>
+</div>
+
+<div class="overlay" id="ov" role="dialog" aria-modal="true" aria-label="טיימר פלאנק">
+  <div class="ov-side" id="ovSide"></div>
+  <div class="ov-phase" id="ovPhase"></div>
+  <div class="ov-sec" id="ovSec">30</div>
+  <button class="ov-stop" id="ovStop">עצור ורשום</button>
+</div>
+
+<script>
+/* המינונים מוגדרים כאן. כדי לשנות מינון משנים את target ואת dose של התרגיל, ו-short הוא השם בשורת הסיכום. */
+const EX=[
+ {id:'calf',short:'עקבים',name:'גובה עקבים חד-צדדי על מדרגה',sets:3,target:12,dose:'3 סטים של 12 לכל רגל',focus:'ירידה איטית של 3 שניות, טווח מלא.',tempo:true,
+  how:['עומדים על קצה מדרגה על כרית כף הרגל, העקב באוויר. הרגל השנייה מכופפת מאחור.','יד על מעקה או קיר לשיווי משקל בלבד, לא כדי לדחוף.','עולים הכי גבוה שאפשר, המשקל על הבוהן הגדולה.','יורדים לאט, 3 שניות, עד שהעקב מתחת לגובה המדרגה ומרגישים מתיחה בשוק.','12 ברגל אחת ואז 12 בשנייה. זה סט אחד.'],
+  mistakes:['קפיצה מהירה בתחתית במקום ירידה מבוקרת','טווח חלקי - לא עולים עד הסוף או לא יורדים מתחת למדרגה','כף הרגל מתגלגלת החוצה','דחיפה עם היד על המעקה'],
+  why:'למה דווקא התרגיל הזה: ריצה מעמיסה את השוק ואת גיד אכילס, ועוד יותר ריצה יחפה או בנעליים מינימליסטיות. הרמת עקבים עם ירידה איטית מחזקת בדיוק את האזור הזה.',
+  note:'אם רגל אחת עשתה פחות, רושמים את המספר הנמוך.'},
+ {id:'split',short:'סקוואט',name:'סקוואט בפיסוק',sets:3,target:10,dose:'3 סטים של 10 לכל רגל',focus:'',
+  how:['צעד גדול קדימה. הרגליים ברוחב האגן, כמו על שתי מסילות ולא על חבל.','העקב האחורי באוויר, רוב המשקל על הרגל הקדמית.','יורדים ישר למטה עד שהברך האחורית כמעט נוגעת ברצפה. שתי הברכיים בערך ב-90 מעלות.','עולים בדחיפה דרך כל כף הרגל הקדמית.','10 ברגל אחת, מחליפים ו-10 בשנייה. זה סט אחד.'],
+  mistakes:['העקב הקדמי מתרומם מהרצפה','הברך הקדמית קורסת פנימה','צעד קצר מדי, והברך הקדמית בורחת הרבה לפני האצבעות','הגוף נופל קדימה בירידה'],
+  note:'אם רגל אחת עשתה פחות, רושמים את המספר הנמוך.'},
+ {id:'pushup',short:'שכיבות',name:'שכיבות סמיכה',sets:3,target:null,dose:'3 סטים, עד כמה שאפשר',focus:'רושמים את המספר בפועל.',
+  how:['ידיים קצת יותר רחב מהכתפיים, אצבעות קדימה.','הגוף בקו ישר מהראש לעקבים. מכווצים ישבן ובטן.','מרפקים בזווית של בערך 45 מעלות מהגוף, לא לצדדים.','יורדים עד שהחזה בערך בגובה אגרוף מהרצפה, ודוחפים עד יד ישרה.','עוצרים כשהטכניקה נשברת - האגן צונח או הטווח מתקצר. חזרה חלקית לא נספרת.'],
+  mistakes:['אגן צונח או מורם','ראש נופל קדימה לפני החזה','חצי טווח בסוף הסט כדי להוסיף עוד כמה']},
+ {id:'plank',short:'פלאנק',name:'פלאנק צד',sets:2,target:30,dose:'2 סטים של 30 שניות לכל צד',focus:'הטיימר נותן 5 שניות להיכנס לתנוחה ואז סופר 30.',plank:true,
+  how:['שוכבים על הצד, אמה על הרצפה, מרפק ישר מתחת לכתף.','כפות הרגליים אחת על השנייה, או אחת לפני השנייה ליציבות.','מרימים את האגן עד קו ישר מהראש לעקבים.','מחזיקים 30 שניות ונושמים רגיל. אז הצד השני. שני הצדדים הם סט אחד.'],
+  mistakes:['האגן צונח לכיוון הרצפה','האגן בורח אחורה','הכתף עולה לכיוון האוזן'],
+  note:'אם עצרת מוקדם, לוחצים "עצור ורשום" והזמן בפועל נרשם.'}
+];
+const TOTAL=EX.reduce((a,e)=>a+e.sets,0);
+const d=new Date(),p=n=>String(n).padStart(2,'0');
+const DATE=d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+const KEY='strength-'+DATE;
+
+function blank(){
+  const s={v:{},draft:{},feel:{},plank:[{r:null,l:null},{r:null,l:null}],last:null};
+  EX.forEach(e=>{s.v[e.id]=Array(e.sets).fill(null);s.draft[e.id]=Array(e.sets).fill(e.target||0);s.feel[e.id]=null});
+  return s;
+}
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))||blank()}catch(e){S=blank()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+function current(){for(const e of EX)for(let i=0;i<e.sets;i++)if(S.v[e.id][i]==null)return{id:e.id,i};return null}
+function doneCount(){return EX.reduce((a,e)=>a+S.v[e.id].filter(x=>x!=null).length,0)}
+function exState(e){const v=S.v[e.id];if(v.every(x=>x!=null))return'done';const c=current();return c&&c.id===e.id?'active':'todo'}
+
+function setRow(e,i,cur){
+  const v=S.v[e.id][i],lbl='<span class="set-label">סט '+(i+1)+'</span>';
+  if(e.plank){
+    const pk=S.plank[i];
+    const btn=(side,name)=>{const r=pk[side];return '<button class="side'+(r!=null?' rec':'')+'" data-a="plank" data-i="'+i+'" data-side="'+side+'">'+name+(r!=null?' '+r+' שנ\'':' - הפעל')+'</button>'};
+    return '<div class="set'+(v!=null?' done':cur?' cur':'')+'">'+lbl+'<div class="sides">'+btn('r','ימין')+btn('l','שמאל')+'</div></div>';
+  }
+  if(v!=null)return '<div class="set done">'+lbl+'<div class="done-val">'+v+'</div><button class="undo" data-a="undo" data-ex="'+e.id+'" data-i="'+i+'">שינוי</button></div>';
+  const dv=S.draft[e.id][i];
+  return '<div class="set'+(cur?' cur':'')+'">'+lbl+
+   '<div class="stepper"><button data-a="dec" data-ex="'+e.id+'" data-i="'+i+'" aria-label="פחות">−</button><output>'+dv+'</output><button data-a="inc" data-ex="'+e.id+'" data-i="'+i+'" aria-label="יותר">+</button></div>'+
+   '<button class="go" data-a="done" data-ex="'+e.id+'" data-i="'+i+'">סט הושלם</button></div>';
+}
+
+function render(){
+  const c=current();
+  let h='<div class="top"><p class="date">'+d.toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'numeric'})+'</p>'+
+    '<h1>כוח, 10 דקות</h1>'+
+    '<p class="rule">מיד בסוף הריצה, לפני המקלחת, בבגדי הריצה.</p></div>';
+  EX.forEach((e,n)=>{
+    h+='<section class="ex" id="ex-'+e.id+'" data-state="'+exState(e)+'"><header><span class="num">'+(n+1)+'</span><div><h2>'+e.name+'</h2><p class="dose">'+e.dose+'</p></div></header>';
+    if(e.focus)h+='<p class="focus">'+e.focus+'</p>';
+    if(e.tempo)h+='<div class="tempo"><button class="tempo-btn" data-a="tempo" id="tempoBtn">'+(tempoOn?'עצור קצב':'קצב ירידה - הפעל')+'</button><div class="tempo-box'+(tempoOn?' on':'')+'" id="tempoBox"><div class="tempo-word" id="tempoWord">עולים</div><div class="tempo-bar"><div class="tempo-fill" id="tempoFill"></div></div></div></div>';
+    h+='<details><summary>איך עושים</summary><ol>'+e.how.map(x=>'<li>'+x+'</li>').join('')+'</ol><h3>טעויות נפוצות</h3><ul>'+e.mistakes.map(x=>'<li>'+x+'</li>').join('')+'</ul>'+(e.why?'<p class="why">'+e.why+'</p>':'')+'</details>';
+    if(e.note)h+='<p class="focus">'+e.note+'</p>';
+    h+='<div class="sets">';
+    for(let i=0;i<e.sets;i++)h+=setRow(e,i,c&&c.id===e.id&&c.i===i);
+    h+='</div><div class="feel"><p>איך הרגיש?</p><div class="chips">'+['קל','בינוני','קשה'].map(f=>'<button class="chip" aria-pressed="'+(S.feel[e.id]===f)+'" data-a="feel" data-ex="'+e.id+'" data-f="'+f+'">'+f+'</button>').join('')+'</div></div></section>';
+  });
+  h+='<section class="summary"><h2>סיכום האימון</h2><p>שורה אחת להעתיק לאן שרושמים אימונים: פתקים, אפליקציה או שיחה עם AI.</p>'+
+    '<textarea id="line" readonly>'+line()+'</textarea>'+
+    '<div class="row"><button class="big" data-a="copy" id="copyBtn">העתק שורה</button><button class="ghost" data-a="reset">איפוס</button></div>'+
+    '<ul class="reminders"><li>יש שעון ספורט? כדאי לרשום בו את האימון, אפילו כ"אחר".</li><li>כואב? עוצרים. זה כלי לספירה, לא תוכנית רפואית.</li></ul></section>';
+  document.getElementById('app').innerHTML=h;
+  const n=doneCount();
+  document.getElementById('barTxt').textContent=n+'/'+TOTAL+' סטים';
+  document.getElementById('progFill').style.width=(n/TOTAL*100)+'%';
+}
+
+function line(){
+  const parts=EX.map(e=>{
+    const v=S.v[e.id].filter(x=>x!=null);
+    return e.short+' '+(v.length?v.join('/'):'-')+(S.feel[e.id]?' '+S.feel[e.id]:'');
+  });
+  const any=doneCount()>0;
+  return 'כוח: '+(any?(doneCount()===TOTAL?'בוצע':'חלקי'):'-')+' | '+parts.join(' | ');
+}
+
+function markDone(id,i,val){
+  S.v[id][i]=val;S.last=Date.now();save();
+  const e=EX.find(x=>x.id===id);
+  render();
+  if(S.v[id].every(x=>x!=null)){
+    const idx=EX.indexOf(e);
+    const next=document.getElementById('ex-'+(EX[idx+1]?EX[idx+1].id:'')) || document.querySelector('.summary');
+    if(next)next.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});
+  }
+}
+
+document.getElementById('app').addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-a]');if(!b)return;
+  const a=b.dataset.a,id=b.dataset.ex,i=+b.dataset.i;
+  if(a==='inc'||a==='dec'){S.draft[id][i]=Math.max(0,S.draft[id][i]+(a==='inc'?1:-1));save();b.parentNode.querySelector('output').textContent=S.draft[id][i];return}
+  if(a==='done'){markDone(id,i,S.draft[id][i]);return}
+  if(a==='undo'){S.v[id][i]=null;save();render();return}
+  if(a==='feel'){S.feel[id]=S.feel[id]===b.dataset.f?null:b.dataset.f;save();render();return}
+  if(a==='plank'){startPlank(i,b.dataset.side);return}
+  if(a==='tempo'){toggleTempo();return}
+  if(a==='copy'){copyLine();return}
+  if(a==='reset'){if(confirm('לאפס את כל האימון של היום?')){S=blank();save();render();window.scrollTo(0,0)}return}
+});
+
+/* rest clock */
+setInterval(()=>{
+  const el=document.getElementById('barRest');
+  if(!S.last||doneCount()===TOTAL){el.textContent='';return}
+  const s=Math.floor((Date.now()-S.last)/1000);
+  el.textContent='מאז הסט: '+Math.floor(s/60)+':'+p(s%60);
+},500);
+
+/* tempo helper for calf raises: 1s up, 3s down */
+let tempoOn=false,tempoT=null,tempoPhase='';
+function toggleTempo(){
+  tempoOn=!tempoOn;
+  document.getElementById('tempoBox').classList.toggle('on',tempoOn);
+  document.getElementById('tempoBtn').textContent=tempoOn?'עצור קצב':'קצב ירידה - הפעל';
+  clearInterval(tempoT);
+  if(!tempoOn)return;
+  const t0=Date.now();
+  tempoT=setInterval(()=>{
+    const w=document.getElementById('tempoWord'),f=document.getElementById('tempoFill');
+    if(!w){clearInterval(tempoT);tempoOn=false;return}
+    const t=((Date.now()-t0)/1000)%4;
+    let ph,txt;
+    if(t<1){ph='up';txt='עולים';f.style.width=(t*100)+'%'}
+    else{const r=Math.ceil(4-t);ph='down'+r;txt='יורדים '+r;f.style.width=((4-t)/3*100)+'%'}
+    if(ph!==tempoPhase){tempoPhase=ph;w.textContent=txt;if(navigator.vibrate)try{navigator.vibrate(40)}catch(e){}}
+  },50);
+}
+
+/* plank timer */
+let run=null,runT=null;
+const ov=document.getElementById('ov');
+function beep(len){
+  try{const C=window.AudioContext||window.webkitAudioContext;const c=window._ac||(window._ac=new C());c.resume&&c.resume();
+    const o=c.createOscillator(),g=c.createGain();o.frequency.value=880;o.connect(g);g.connect(c.destination);
+    g.gain.setValueAtTime(.25,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+len);o.start();o.stop(c.currentTime+len)}catch(e){}
+  if(navigator.vibrate)try{navigator.vibrate(len*1000)}catch(e){}
+}
+function startPlank(i,side){
+  run={i,side,t0:Date.now(),prep:5,hold:30,beeped:false};
+  document.getElementById('ovSide').textContent='סט '+(i+1)+' - צד '+(side==='r'?'ימין':'שמאל');
+  ov.classList.add('on');beep(.08);
+  tick();runT=setInterval(tick,100);
+  document.getElementById('ovStop').focus();
+}
+function tick(){
+  const el=(Date.now()-run.t0)/1000;
+  const ph=document.getElementById('ovPhase'),sec=document.getElementById('ovSec');
+  if(el<run.prep){ov.className='overlay on prep';ph.textContent='נכנסים לתנוחה';sec.textContent=Math.ceil(run.prep-el);return}
+  if(!run.beeped){run.beeped=true;beep(.15)}
+  const h=el-run.prep;
+  ov.className='overlay on hold';ph.textContent='מחזיקים';
+  if(h>=run.hold){finishPlank(run.hold);beep(.5);return}
+  sec.textContent=Math.ceil(run.hold-h);
+}
+function finishPlank(val){
+  clearInterval(runT);ov.classList.remove('on');
+  const {i,side}=run;run=null;
+  S.plank[i][side]=val;
+  const pk=S.plank[i];
+  if(pk.r!=null&&pk.l!=null){markDone('plank',i,Math.min(pk.r,pk.l))}else{S.last=Date.now();save();render()}
+}
+document.getElementById('ovStop').addEventListener('click',()=>{
+  if(!run)return;
+  const h=Math.max(0,(Date.now()-run.t0)/1000-run.prep);
+  finishPlank(Math.floor(h));
+});
+
+function copyLine(){
+  const t=document.getElementById('line'),b=document.getElementById('copyBtn');
+  const ok=()=>{b.textContent='הועתק';setTimeout(()=>{b.textContent='העתק שורה'},1600)};
+  const fallback=()=>{try{t.focus();t.select();document.execCommand('copy');ok()}catch(e){t.select();b.textContent='סמן והעתק ידנית'}};
+  try{navigator.clipboard.writeText(t.value).then(ok,fallback)}catch(e){fallback()}
+}
+
+render();
+</script>
+</body>
+</html>
