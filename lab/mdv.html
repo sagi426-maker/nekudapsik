@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="canonical" href="https://nekuda-psik.com/lab/mdv.html">
-<title>MD Viewer — קורא מסמכים</title>
+<title>MD Viewer - קורא מסמכים</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -353,14 +353,14 @@ function showFile(name, text) {
   viewer.style.display = 'block';
   exitEdit();
   window.scrollTo(0, 0);
-  document.title = name.replace(/\.md$/i, '') + ' — MD Viewer';
+  document.title = name.replace(/\.md$/i, '') + ' - MD Viewer';
 }
 
 function showDrop() {
   exitEdit();
   viewer.style.display = 'none';
   dropZone.style.display = 'flex';
-  document.title = 'MD Viewer — קורא מסמכים';
+  document.title = 'MD Viewer - קורא מסמכים';
 }
 
 function toggleEdit() {
