@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#FF5A1F">
+<title>כושר</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="כושר">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+</head>
+<body>
+
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Rubik:wght@600;800&display=swap">
+<style>
+/* Layout: one phone column read top to bottom in workout order - day strip, strength, flexibility, report - with a timer bar fixed to the bottom edge. */
+:root{
+  --bg:#EDF0F2; --surface:#FFFFFF; --ink:#15212B; --muted:#5A6772; --line:#D3DAE0;
+  --accent:#1D4ED8; --accent-ink:#FFFFFF; --mark:#F2B705; --mark-ink:#15212B; --done:#1E7B4F; --done-bg:#E2F1E9;
+  --display:"Rubik","Heebo",system-ui,sans-serif; --body:"Heebo",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#10171D; --surface:#19232C; --ink:#E8EEF2; --muted:#93A1AD; --line:#2B3843;
+  --accent:#7FA2FF; --accent-ink:#0B1220; --mark:#F2B705; --mark-ink:#15212B; --done:#5CC48F; --done-bg:#173226; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#10171D; --surface:#19232C; --ink:#E8EEF2; --muted:#93A1AD; --line:#2B3843;
+  --accent:#7FA2FF; --accent-ink:#0B1220; --mark:#F2B705; --mark-ink:#15212B; --done:#5CC48F; --done-bg:#173226; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.45}
+#app{max-width:520px;margin:0 auto;padding-block:16px 140px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:24px}
+button{font:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0;font-family:var(--display);text-wrap:balance}
+
+.day{display:flex;flex-direction:column;gap:12px}
+.day .date{color:var(--muted);font-size:14px}
+.day h1{font-size:34px;font-weight:800;line-height:1.1}
+.day .run{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.toggle{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:8px 14px;min-height:44px;font-weight:500}
+.toggle[aria-pressed="true"]{background:var(--done-bg);border-color:var(--done);color:var(--done)}
+
+.seg{display:grid;grid-template-columns:repeat(3,1fr);border:1.5px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface)}
+.seg button{border:0;background:transparent;padding:10px 4px;min-height:44px;font-weight:500}
+.seg button + button{border-inline-start:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+
+.block{display:flex;flex-direction:column;gap:4px}
+.block > header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding-bottom:8px;border-bottom:3px solid var(--ink)}
+.block h2{font-size:22px;font-weight:800}
+.block .meta{color:var(--muted);font-size:14px}
+.note{color:var(--muted);font-size:14px;margin:8px 0 0}
+
+.ex{padding:16px 0;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:12px}
+.ex-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.ex h3{font-size:18px;font-weight:600}
+.ex .dose{font-family:var(--display);font-weight:600;color:var(--accent);white-space:nowrap;font-size:15px}
+.ex .cue{margin:0;color:var(--muted);font-size:14px}
+.ex.all-done h3{color:var(--done)}
+
+.how{border:1.5px solid var(--line);border-radius:10px;font-size:15px}
+.how summary{cursor:pointer;padding:10px 12px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:500;color:var(--accent);list-style:none}
+.how summary::-webkit-details-marker{display:none}
+.how summary::after{content:"+";font-family:var(--display);font-size:20px;line-height:1}
+.how[open] summary::after{content:"-"}
+.how summary:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+.how p{margin:0;padding:0 12px 10px}
+.how .keep{padding:0 12px;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.how ul{margin:4px 0 0;padding:0 28px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.sets{display:flex;flex-direction:column;gap:8px}
+.set{display:grid;grid-template-columns:44px 1fr 56px;align-items:center;gap:8px;background:var(--surface);border-radius:10px;padding:6px 8px}
+.set .n{color:var(--muted);font-size:13px;text-align:center}
+.step{display:flex;align-items:center;justify-content:center;gap:6px}
+.step button{width:44px;height:44px;border-radius:8px;border:1.5px solid var(--line);background:transparent;font-size:22px;line-height:1}
+.step .val{min-width:64px;text-align:center;font-family:var(--display);font-weight:800;font-size:26px;font-variant-numeric:tabular-nums}
+.step .unit{font-family:var(--body);font-weight:400;font-size:12px;color:var(--muted);margin-inline-start:2px}
+.check{height:44px;border-radius:8px;border:1.5px solid var(--line);background:transparent;font-size:20px;font-weight:700}
+.set.done{background:var(--done-bg)}
+.set.done .check{background:var(--done);border-color:var(--done);color:var(--surface)}
+.go{height:44px;border-radius:8px;border:0;background:var(--mark);color:var(--mark-ink);font-weight:700;font-size:14px}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chips .lbl{color:var(--muted);font-size:13px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:6px 14px;min-height:40px;font-size:14px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg);font-weight:700}
+
+.report textarea{width:100%;min-height:150px;resize:vertical;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);
+  font:14px/1.6 var(--body);padding:12px;direction:rtl}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.primary{flex:1 1 180px;min-height:52px;border:0;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:17px}
+.ghost{min-height:52px;border:1.5px solid var(--line);border-radius:10px;background:transparent;padding:0 16px}
+.status{min-height:20px;font-size:14px;color:var(--done);margin:6px 0 0}
+
+#bar{position:fixed;left:0;right:0;bottom:0;background:var(--mark);color:var(--mark-ink);z-index:20;
+  padding-block:12px calc(12px + env(safe-area-inset-bottom, 0px));
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px))}
+#bar .in{max-width:520px;margin:0 auto;display:flex;align-items:center;gap:12px}
+#bar .what{flex:1;min-width:0;font-weight:700;font-size:15px}
+#bar .t{font-family:var(--display);font-weight:800;font-size:44px;line-height:1;font-variant-numeric:tabular-nums;direction:ltr}
+#bar button{min-height:44px;border-radius:8px;border:1.5px solid var(--mark-ink);background:transparent;color:var(--mark-ink);padding:0 12px;font-weight:700}
+@media (prefers-reduced-motion:no-preference){ .set,.check,.chip,.toggle{transition:background-color .15s,border-color .15s} }
+</style>
+
+<div id="app" dir="rtl" lang="he"></div>
+<div id="bar" dir="rtl" lang="he" hidden>
+  <div class="in">
+    <div class="what" id="barWhat"></div>
+    <div class="t" id="barT">0:00</div>
+    <button type="button" id="barPlus" data-act="plus">+15</button>
+    <button type="button" id="barSkip" data-act="skip">דלג</button>
+  </div>
+</div>
+
+<script>
+(function(){
+document.documentElement.dir='rtl'; document.documentElement.lang='he';
+
+var DAYS=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+var PLAN=[{run:'לפארק וחזרה',s:'park'},{run:'קלה',s:'home'},{run:'קלה',s:'none'},{run:'לפארק וחזרה',s:'park'},{run:'קלה',s:'home'},{run:'ארוכה',s:'none'},{run:'מנוחה',s:'none'}];
+var START=new Date(2026,10,8), END=new Date(2026,11,19);
+var REST=75;
+
+var DEFS={
+ park:{title:'פארק',meta:'כ-40 דקות, מנוחה 60-90 שניות',note:'כל סט נגמר כשנשארו 1-2 חזרות במיכל. לא עד כשל.',ex:[
+  {id:'pullup',name:'מתח',dose:'4 על 3',sets:4,def:3,cue:'נקי, טווח מלא. ראשון, כשאתה רענן.'},
+  {id:'row',name:'חתירה אוסטרלית',dose:'3 על 8-12',sets:3,def:8,cue:'מוט נמוך. מתחילים עם ברכיים כפופות.'},
+  {id:'dip',name:'מקבילים',dose:'3 על 6-12',sets:3,def:6,cue:'אם לא מגיעים ל-6 - על ספסל.'},
+  {id:'bulgarian',name:'סקוואט בולגרי',dose:'3 על 8-12 לרגל',sets:3,def:8,cue:'רגל אחורית על ספסל. ירידה איטית.'},
+  {id:'knee',name:'הרמות ברכיים בתלייה',dose:'3 על 8-12',sets:3,def:8,cue:'בלי תנופה.'}]},
+ home:{title:'בית',meta:'20 דקות, אחרי הריצה הקלה',note:'קצר בכוונה. זה הבונוס, לא העיקר.',ex:[
+  {id:'pushup',name:'שכיבות סמיכה',dose:'3 סטים',sets:3,def:10,cue:'כל סט נגמר כשנשארו 1-2. רושמים את המספר בפועל.'},
+  {id:'rdl',name:'דדליפט רומני על רגל אחת',dose:'3 על 10 לרגל',sets:3,def:10,cue:'ירידה 3 שניות, גב ישר.'},
+  {id:'calf',name:'גובה עקבים חד-צדדי',dose:'3 על 12 לרגל',sets:3,def:12,cue:'על מדרגה. ירידה 3 שניות, טווח מלא.'},
+  {id:'plank',name:'פלאנק צד',dose:'2 על 30 שנ\' לצד',sets:2,def:30,step:10,timed:true,sides:['צד ראשון','צד שני'],cue:'הטיימר מריץ את שני הצדדים ברצף.'}]},
+ flex:{title:'גמישות',meta:'כ-5 דקות, בסוף האימון',note:'לא מותחים בכוח ולא בקפיצות. לא נספר במדדים.',ex:[
+  {id:'elephant',name:'הליכת פיל',dose:'3 על 10 לרגל',sets:3,def:10,cue:'ידיים על הגובה, שתי הברכיים נעולות. מרימים עקב אחד ומותחים את הרגל השנייה.',heights:['שרפרף','מדרגה','רצפה']},
+  {id:'seated',name:'מתיחת המסטרינג בישיבה',dose:'3 על 10 שנ\' לרגל',sets:3,def:10,timed:true,fixed:true,noFeel:true,sides:['רגל ראשונה','רגל שנייה'],cue:'על כיסא, רגל ישרה קדימה, מתכופפים מהאגן.'}]}
+};
+
+var HOW={
+ pullup:{how:'נתלים על המוט באחיזה עילית, ידיים קצת יותר רחב מהכתפיים. מושכים עד שהסנטר מעל המוט, ויורדים בשליטה עד ידיים ישרות.',keep:['כל חזרה מתחילה מתלייה מלאה, בלי תנופה מהרגליים','לפני המשיכה מורידים כתפיים למטה ואחורה','ירידה של 2 שניות לפחות','עוצרים כשהחזרה מפסיקה להיות נקייה']},
+ row:{how:'נתלים מתחת למוט נמוך באחיזה עילית, עקבים על הקרקע והגוף ישר כמו קרש. מושכים את החזה אל המוט ויורדים בשליטה.',keep:['האגן לא צונח, קו ישר מכתף עד עקב','מרפקים בזווית של כ-45 מעלות מהגוף','למעלה מכווצים שכמות לשנייה','ברכיים כפופות מקלות, רגליים ישרות מקשות']},
+ dip:{how:'נשענים על המקבילים בידיים ישרות ורוכנים מעט קדימה. יורדים עד שהזרוע בערך מקבילה לקרקע, ודוחפים חזרה עד ידיים ישרות.',keep:['כתפיים רחוקות מהאוזניים לאורך כל התנועה','מרפקים הולכים אחורה, לא נפתחים לצדדים','לא יורדים עמוק יותר ממה שנוח לכתף','גרסת ספסל: ידיים על הספסל מאחורי הגב, רגליים קדימה על הקרקע']},
+ bulgarian:{how:'עומדים צעד גדול לפני ספסל, וגב כף הרגל האחורית מונח עליו. יורדים ישר למטה עד שהירך הקדמית בערך מקבילה לקרקע, ועולים דרך העקב הקדמי.',keep:['רוב המשקל על הרגל הקדמית','הברך בקו של כף הרגל, לא קורסת פנימה','גו זקוף עם נטייה קלה קדימה','ירידה איטית, כ-3 שניות']},
+ knee:{how:'נתלים על המוט בידיים ישרות. מרימים את שתי הברכיים לפחות לגובה האגן, ומורידים לאט.',keep:['בלי נדנוד. אם הגוף מתנדנד, עוצרים ומתייצבים','בסוף ההרמה מגלגלים את האגן מעט קדימה','ירידה בשליטה, לא נפילה','כתפיים פעילות, לא תלויים על המפרקים']},
+ pushup:{how:'ידיים על הרצפה קצת יותר רחב מהכתפיים, גוף ישר מהראש עד העקב. יורדים עד שהחזה כמעט נוגע ברצפה, ודוחפים חזרה.',keep:['בטן וישבן מכווצים, האגן לא צונח','מרפקים בזווית של כ-45 מעלות מהגוף','טווח מלא בכל חזרה, גם כשקשה','הראש בהמשך לגב, מבט לרצפה']},
+ rdl:{how:'עומדים על רגל אחת עם ברך מעט כפופה. מתקפלים מהאגן קדימה בזמן שהרגל השנייה נשלחת ישר אחורה, עד שהגו כמעט מקביל לרצפה, וחוזרים לעמידה.',keep:['גב ישר, התנועה באה מהאגן','האגן נשאר מקביל לרצפה ולא נפתח לצד','ירידה של 3 שניות','המתיחה מורגשת מאחורי הירך של הרגל העומדת','אפשר לגעת בקיר באצבע לאיזון']},
+ calf:{how:'עומדים על קצה מדרגה על כרית כף רגל אחת, העקב באוויר. עולים הכי גבוה שאפשר, עוצרים שנייה, ויורדים לאט עד שהעקב מתחת לגובה המדרגה.',keep:['ברך ישרה','ירידה של 3 שניות','טווח מלא: הכי גבוה והכי נמוך','היד על המעקה לאיזון בלבד, לא למשיכה','כאב ממוקד באכילס - עוצרים']},
+ plank:{how:'שוכבים על הצד, האמה על הרצפה והמרפק בדיוק מתחת לכתף. מרימים את האגן עד שהגוף קו ישר מהראש עד כפות הרגליים, ומחזיקים.',keep:['האגן לא צונח ולא נסוג אחורה','הכתף רחוקה מהאוזן','ממשיכים לנשום','קשה מדי: ברך תחתונה על הרצפה']},
+ elephant:{how:'עומדים מול שרפרף, רגליים ברוחב האגן, מתכופפים ומניחים כפות ידיים מלאות עליו. הברכיים נעולות והרגליים ישרות. בכל חזרה מרימים עקב אחד ומותחים את הרגל השנייה, ומחליפים.',keep:['הידיים נשארות על הגובה כל הזמן','תנועה איטית, בלי קפיצות','מתיחה ברורה מאחורי הירך, לא כאב','קשה: נשארים בגובה. קל: מורידים גובה']},
+ seated:{how:'יושבים על קצה כיסא. רגל אחת ישרה קדימה עם העקב על הרצפה, השנייה כפופה. מתכופפים קדימה מהאגן עם גב ארוך, עד שמורגשת מתיחה מאחורי הירך, ומחזיקים.',keep:['גב ישר, לא מתעגלים כדי להגיע רחוק יותר','בלי קפיצות','מתיחה ברורה אבל לא כאב','ממשיכים לנשום']}
+};
+var openHow={};
+
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+var now=new Date(), today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+var inRange= today>=START && today<=END;
+var plan=PLAN[today.getDay()];
+var week= inRange ? Math.floor(Math.round((today-START)/864e5)/7)+1 : null;
+var KEY='coach-day-'+iso(today);
+
+function load(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+var last=load('coach-last')||{};
+var S=load(KEY)||{mode:inRange?plan.s:'none',run:false,ex:{},height:last.height||'שרפרף'};
+
+function def(id){for(var g in DEFS){var a=DEFS[g].ex;for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];}}
+function st(d){
+  if(!S.ex[d.id]){
+    var prev=last[d.id]||[]; var sets=[];
+    for(var i=0;i<d.sets;i++) sets.push({v:(d.fixed||prev[i]==null)?d.def:prev[i],done:false});
+    S.ex[d.id]={sets:sets,feel:null};
+  }
+  return S.ex[d.id];
+}
+function persist(){
+  save(KEY,S);
+  for(var id in S.ex){var done=S.ex[id].sets.filter(function(x){return x.done;});if(done.length)last[id]=S.ex[id].sets.map(function(x){return x.v;});}
+  last.height=S.height; save('coach-last',last);
+}
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+
+function exHTML(d){
+  var e=st(d), allDone=e.sets.every(function(x){return x.done;});
+  var h='<div class="ex'+(allDone?' all-done':'')+'"><div class="ex-head"><h3>'+esc(d.name)+'</h3><span class="dose">'+esc(d.dose)+'</span></div>';
+  h+='<p class="cue">'+esc(d.cue)+'</p>';
+  var w=HOW[d.id];
+  if(w){
+    h+='<details class="how" data-how="'+d.id+'"'+(openHow[d.id]?' open':'')+'><summary>איך עושים את זה</summary><p>'+esc(w.how)+'</p><div class="keep">על מה להקפיד</div><ul>';
+    w.keep.forEach(function(k){h+='<li>'+esc(k)+'</li>';});
+    h+='</ul></details>';
+  }
+  if(d.heights){
+    h+='<div class="chips"><span class="lbl">גובה הידיים</span>';
+    d.heights.forEach(function(x){h+='<button type="button" class="chip" data-act="height" data-v="'+x+'" aria-pressed="'+(S.height===x)+'">'+x+'</button>';});
+    h+='</div>';
+  }
+  h+='<div class="sets">';
+  e.sets.forEach(function(s,i){
+    h+='<div class="set'+(s.done?' done':'')+'"><span class="n">סט '+(i+1)+'</span><div class="step">';
+    if(!d.fixed) h+='<button type="button" data-act="dec" data-id="'+d.id+'" data-i="'+i+'" aria-label="פחות">-</button>';
+    h+='<span class="val">'+s.v+(d.timed?'<span class="unit">שנ\'</span>':'')+'</span>';
+    if(!d.fixed) h+='<button type="button" data-act="inc" data-id="'+d.id+'" data-i="'+i+'" aria-label="יותר">+</button>';
+    h+='</div>';
+    if(d.timed && !s.done) h+='<button type="button" class="go" data-act="hold" data-id="'+d.id+'" data-i="'+i+'">הפעל</button>';
+    else h+='<button type="button" class="check" data-act="check" data-id="'+d.id+'" data-i="'+i+'" aria-pressed="'+s.done+'" aria-label="סמן סט '+(i+1)+'">&#10003;</button>';
+    h+='</div>';
+  });
+  h+='</div>';
+  if(!d.noFeel){
+    h+='<div class="chips"><span class="lbl">תחושה</span>';
+    ['קל','בינוני','קשה'].forEach(function(x){h+='<button type="button" class="chip" data-act="feel" data-id="'+d.id+'" data-v="'+x+'" aria-pressed="'+(e.feel===x)+'">'+x+'</button>';});
+    h+='</div>';
+  }
+  return h+'</div>';
+}
+function blockHTML(key,label){
+  var g=DEFS[key];
+  var h='<section class="block"><header><h2>'+label+'</h2><span class="meta">'+esc(g.meta)+'</span></header>';
+  g.ex.forEach(function(d){h+=exHTML(d);});
+  return h+'<p class="note">'+esc(g.note)+'</p></section>';
+}
+
+function report(){
+  var L=[];
+  L.push('תאריך: '+iso(today)+' | '+DAYS[today.getDay()]+(week?' | שבוע '+week:''));
+  if(S.run) L.push('ריצה: בוצע'+(inRange&&plan.run!=='מנוחה'?' | '+plan.run:''));
+  if(S.mode!=='none'){
+    var parts=[];
+    DEFS[S.mode].ex.forEach(function(d){
+      var e=S.ex[d.id]; if(!e) return;
+      var done=e.sets.filter(function(x){return x.done;}); if(!done.length) return;
+      parts.push(d.id+' '+done.map(function(x){return x.v;}).join('/')+(e.feel?' '+e.feel:''));
+    });
+    if(parts.length) L.push('כוח: בוצע | '+DEFS[S.mode].title+' | '+parts.join(' | '));
+  }
+  var f=[], el=S.ex.elephant, se=S.ex.seated;
+  if(el&&el.sets.some(function(x){return x.done;})) f.push('elephant '+S.height+(el.feel?' '+el.feel:''));
+  if(se&&se.sets.some(function(x){return x.done;})) f.push('seated');
+  if(f.length) L.push('גמישות: בוצע | '+f.join(' | '));
+  return L.length>1?L.join('\n'):'';
+}
+
+var confirmReset=false, statusMsg='';
+function render(){
+  var restDay=inRange&&plan.run==='מנוחה';
+  var head= !inRange ? 'מחוץ ללוח' : restDay ? 'מנוחה' : (plan.s==='park'?'פארק':plan.s==='home'?'בית':'ריצה '+plan.run);
+  var h='<section class="day"><div class="date">'+DAYS[today.getDay()]+' '+today.getDate()+'.'+(today.getMonth()+1)+(week?' · שבוע '+week+' מתוך 6':'')+'</div>';
+  h+='<h1>'+head+'</h1>';
+  if(!inRange) h+='<p class="note">התאריך לא נמצא בלוח (8.11-19.12.2026). אפשר לבחור אימון ידנית.</p>';
+  else if(restDay) h+='<p class="note">אין ריצה, אין כוח ואין גמישות. הליכה זה בסדר.</p>';
+  else h+='<div class="run"><span>ריצה: '+plan.run+'</span><button type="button" class="toggle" data-act="run" aria-pressed="'+S.run+'">'+(S.run?'רצתי &#10003;':'סמן שרצתי')+'</button></div>';
+  if(!restDay){
+    h+='<div class="seg" role="group" aria-label="אימון כוח">';
+    [['park','פארק'],['home','בית'],['none','בלי כוח']].forEach(function(m){h+='<button type="button" data-act="mode" data-v="'+m[0]+'" aria-pressed="'+(S.mode===m[0])+'">'+m[1]+'</button>';});
+    h+='</div>';
+    if(inRange&&S.mode!==plan.s) h+='<p class="note">לפי הלוח היום: '+(plan.s==='none'?'בלי כוח':DEFS[plan.s].title)+'. שינוי רק לפי כללי ההתאמה (הזזת פארק, גשם).</p>';
+  }
+  h+='</section>';
+  if(!restDay){
+    if(S.mode!=='none') h+=blockHTML(S.mode,'כוח - '+DEFS[S.mode].title);
+    h+=blockHTML('flex','גמישות');
+    var r=report();
+    h+='<section class="block report"><header><h2>דיווח למאמן</h2><span class="meta">מדביקים בצ\'אט</span></header>';
+    h+='<textarea id="reportText" readonly aria-label="דיווח למאמן" placeholder="סמן סטים כדי לבנות את הדיווח">'+esc(r)+'</textarea>';
+    h+='<div class="row"><button type="button" class="primary" data-act="copy">העתק דיווח</button>';
+    h+='<button type="button" class="ghost" data-act="reset">'+(confirmReset?'בטוח? לחץ שוב':'אפס את היום')+'</button></div>';
+    h+='<p class="status" role="status">'+esc(statusMsg)+'</p></section>';
+  }
+  document.getElementById('app').innerHTML=h;
+}
+
+document.addEventListener('toggle',function(ev){
+  var el=ev.target; if(el&&el.dataset&&el.dataset.how) openHow[el.dataset.how]=el.open;
+},true);
+
+/* ---- timer ---- */
+var T=null, tick=null, actx=null, lock=null;
+function beep(n){
+  try{
+    if(!actx) return;
+    for(var i=0;i<n;i++){var o=actx.createOscillator(),g=actx.createGain();o.frequency.value=880;o.connect(g);g.connect(actx.destination);
+      var t=actx.currentTime+i*0.25;g.gain.setValueAtTime(0.25,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.18);o.start(t);o.stop(t+0.2);}
+  }catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate(n>1?[200,100,200]:150);}catch(e){}
+}
+function wake(){
+  try{var A=window.AudioContext||window.webkitAudioContext; if(!actx&&A)actx=new A(); if(actx&&actx.state==='suspended')actx.resume();}catch(e){}
+  try{if(navigator.wakeLock&&!lock)navigator.wakeLock.request('screen').then(function(l){lock=l;l.addEventListener('release',function(){lock=null;});}).catch(function(){});}catch(e){}
+}
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'&&T)wake();});
+
+function startPhases(phases,onEnd){T={phases:phases,i:0,end:Date.now()+phases[0].sec*1000,onEnd:onEnd};showBar();}
+function showBar(){
+  document.getElementById('bar').hidden=false;
+  document.getElementById('barPlus').hidden=!T.phases[T.i].rest;
+  if(!tick)tick=setInterval(update,200); update();
+}
+function stopTimer(){T=null;clearInterval(tick);tick=null;document.getElementById('bar').hidden=true;}
+function update(){
+  if(!T)return;
+  var left=Math.ceil((T.end-Date.now())/1000);
+  if(left<=0){
+    if(T.i<T.phases.length-1){T.i++;T.end=Date.now()+T.phases[T.i].sec*1000;beep(1);document.getElementById('barPlus').hidden=!T.phases[T.i].rest;left=T.phases[T.i].sec;}
+    else{var cb=T.onEnd;stopTimer();beep(2);if(cb)cb();return;}
+  }
+  document.getElementById('barWhat').textContent=T.phases[T.i].label;
+  document.getElementById('barT').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');
+}
+
+/* ---- actions ---- */
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-act]'); if(!b)return;
+  wake();
+  var a=b.dataset.act, id=b.dataset.id, i=+b.dataset.i, d=id?def(id):null, e=d?st(d):null;
+  if(a!=='reset')confirmReset=false; if(a!=='copy')statusMsg='';
+  if(a==='plus'){if(T)T.end+=15000;update();return;}
+  if(a==='skip'){stopTimer();return;}
+  if(a==='inc'){e.sets[i].v+= (d.step||1);}
+  else if(a==='dec'){e.sets[i].v=Math.max(d.step||0,e.sets[i].v-(d.step||1));}
+  else if(a==='check'){
+    e.sets[i].done=!e.sets[i].done;
+    if(e.sets[i].done&&!d.timed&&!d.heights) startPhases([{label:'מנוחה אחרי '+d.name,sec:REST,rest:true}]);
+  }
+  else if(a==='hold'){
+    var sec=e.sets[i].v;
+    startPhases([{label:'להתכונן',sec:4},{label:d.name+' - '+d.sides[0],sec:sec},{label:'מחליפים צד',sec:5},{label:d.name+' - '+d.sides[1],sec:sec}],
+      function(){e.sets[i].done=true;persist();render();});
+  }
+  else if(a==='feel'){e.feel=(e.feel===b.dataset.v)?null:b.dataset.v;}
+  else if(a==='height'){S.height=b.dataset.v;}
+  else if(a==='mode'){S.mode=b.dataset.v;}
+  else if(a==='run'){S.run=!S.run;}
+  else if(a==='reset'){
+    if(!confirmReset){confirmReset=true;}
+    else{confirmReset=false;stopTimer();S={mode:inRange?plan.s:'none',run:false,ex:{},height:last.height||'שרפרף'};statusMsg='היום אופס.';}
+  }
+  else if(a==='copy'){
+    var txt=report();
+    if(!txt){statusMsg='אין עדיין מה לדווח. סמן לפחות סט אחד.';}
+    else{
+      statusMsg='הדיווח הועתק. הדבק אותו בצ\'אט עם המאמן.';
+      var fallback=function(){var ta=document.getElementById('reportText');if(ta){ta.focus();ta.select();}statusMsg='ההעתקה נחסמה. הטקסט מסומן, העתק אותו ידנית.';var p=document.querySelector('.status');if(p)p.textContent=statusMsg;};
+      try{navigator.clipboard.writeText(txt).catch(fallback);}catch(err){persist();render();fallback();return;}
+    }
+  }
+  persist(); render();
+});
+
+render();
+})();
+</script>
+
+
+<script>if('serviceWorker' in navigator){addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+</body>
+</html>
