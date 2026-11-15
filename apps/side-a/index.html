@@ -687,7 +687,7 @@
   async function write(id) {
     const card = document.querySelector('[data-id="' + id + '"]');
     const s = state[id];
-    if (!db) { setStatus(id, "לא נשמר פה. אפשר לכתוב לי בטלגרם"); return; }
+    if (!db) { localSave(); setStatus(id, "נשמר בטלפון"); refreshReport(); return; }
     setStatus(id, "שומר...");
     try {
       await db.collection("reactions").doc(id).set({
@@ -715,7 +715,41 @@
     write(id);
   }
 
+  const LKEY = "side-a-reactions";
+  function localSave() { try { localStorage.setItem(LKEY, JSON.stringify(state)); } catch (e) {} }
+  try { Object.assign(state, JSON.parse(localStorage.getItem(LKEY) || "{}")); } catch (e) {}
+  const LABEL = Object.fromEntries(OPTIONS);
+  function reportText() {
+    const lines = [];
+    cards.forEach(card => {
+      const s = state[card.dataset.id];
+      if (!s || !s.choice) return;
+      const sec = card.closest("section.issue");
+      const issue = sec ? (sec.dataset.top || "").split(" · ")[0] : "";
+      lines.push((issue ? issue + " | " : "") + titleOf(card) + " | " + LABEL[s.choice] + (s.why ? " | למה: " + s.why : ""));
+    });
+    return lines.length ? "צד א' - התגובות שלי\n" + lines.join("\n") : "";
+  }
+  const panel = document.createElement("section");
+  panel.className = "ai-report";
+  panel.innerHTML = '<h2>העתקה ל-AI</h2><p>מה שסימנת נשמר בטלפון הזה. מעתיקים ומדביקים בצ\'אט, וזה נכנס לבחירה של הגיליון הבא.</p><textarea readonly rows="6" aria-label="התגובות שלי" placeholder="סמן אלבומים כדי לבנות את הטקסט"></textarea><div class="row"><button type="button" class="copy">העתק תגובות</button><span class="status" role="status"></span></div>';
+  const endP = document.querySelector(".end");
+  (endP ? endP.parentNode : document.body).insertBefore(panel, endP ? endP.nextSibling : null);
+  const ta = panel.querySelector("textarea"), pst = panel.querySelector(".status");
+  function refreshReport() { ta.value = reportText(); }
+  panel.querySelector(".copy").addEventListener("click", () => {
+    const txt = reportText();
+    if (!txt) { pst.textContent = "אין עדיין מה להעתיק. סמן לפחות אלבום אחד."; return; }
+    const fallback = () => { ta.focus(); ta.select(); pst.textContent = "ההעתקה נחסמה. הטקסט מסומן, העתק ידנית."; };
+    try { navigator.clipboard.writeText(txt).then(() => { pst.textContent = "הועתק. הדבק בצ'אט."; }, fallback); } catch (e) { fallback(); }
+  });
+  const css = document.createElement("style");
+  css.textContent = ".ai-report{margin:32px 0 8px;padding-top:16px;border-top:3px solid var(--text);display:flex;flex-direction:column;gap:10px}.ai-report h2{margin:0;font-size:20px}.ai-report p{margin:0;color:var(--muted);font-size:14px}.ai-report textarea{font:14px/1.6 var(--f);color:var(--text);background:var(--white);border:1.5px solid var(--line);padding:10px;width:100%;box-sizing:border-box;text-align:right;resize:vertical}.ai-report .row{display:flex;align-items:center;gap:14px}.ai-report button.copy{font:700 16px var(--f);color:var(--paper);background:var(--text);border:0;padding:12px 20px;min-height:48px;cursor:pointer}";
+  document.head.appendChild(css);
+
   cards.forEach(build);
+  cards.forEach(c => paint(c.dataset.id));
+  refreshReport();
 
   if (window.claude && typeof window.claude.use === "function") {
     window.claude.use("db").then(d => {
