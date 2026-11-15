@@ -1,5 +1,5 @@
 // Opens offline. Network first (updates land right away), cache as fallback.
-const CACHE = 'ma-kore-v1';
+const CACHE = 'ma-kore-v2';
 const SHELL = [
   "./",
   "index.html",
