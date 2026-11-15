@@ -725,7 +725,7 @@
       const s = state[card.dataset.id];
       if (!s || !s.choice) return;
       const sec = card.closest("section.issue");
-      const issue = sec ? (sec.dataset.top || "").split(" · ")[0] : "";
+      const issue = sec ? ((sec.dataset.top || "").split(" · ")[0] || ("גיליון " + sec.dataset.issue)) : "";
       lines.push((issue ? issue + " | " : "") + titleOf(card) + " | " + LABEL[s.choice] + (s.why ? " | למה: " + s.why : ""));
     });
     return lines.length ? "צד א' - התגובות שלי\n" + lines.join("\n") : "";
@@ -733,13 +733,14 @@
   const panel = document.createElement("section");
   panel.className = "ai-report";
   panel.innerHTML = '<h2>העתקה ל-AI</h2><p>מה שסימנת נשמר בטלפון הזה. מעתיקים ומדביקים בצ\'אט, וזה נכנס לבחירה של הגיליון הבא.</p><textarea readonly rows="6" aria-label="התגובות שלי" placeholder="סמן אלבומים כדי לבנות את הטקסט"></textarea><div class="row"><button type="button" class="copy">העתק תגובות</button><span class="status" role="status"></span></div>';
-  const endP = document.querySelector(".end");
-  (endP ? endP.parentNode : document.body).insertBefore(panel, endP ? endP.nextSibling : null);
+  const secs = document.querySelectorAll("section.issue");
+  const lastSec = secs[secs.length - 1];
+  if (lastSec) lastSec.parentNode.insertBefore(panel, lastSec.nextSibling); else document.body.appendChild(panel);
   const ta = panel.querySelector("textarea"), pst = panel.querySelector(".status");
   function refreshReport() { ta.value = reportText(); }
   panel.querySelector(".copy").addEventListener("click", () => {
     const txt = reportText();
-    if (!txt) { pst.textContent = "אין עדיין מה להעתיק. סמן לפחות אלבום אחד."; return; }
+    if (!txt) { pst.textContent = "אין עדיין מה להעתיק. סמן לפחות אחד."; return; }
     const fallback = () => { ta.focus(); ta.select(); pst.textContent = "ההעתקה נחסמה. הטקסט מסומן, העתק ידנית."; };
     try { navigator.clipboard.writeText(txt).then(() => { pst.textContent = "הועתק. הדבק בצ'אט."; }, fallback); } catch (e) { fallback(); }
   });

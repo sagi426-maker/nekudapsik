@@ -1,5 +1,5 @@
 // Opens offline. Network first (updates land right away), cache as fallback.
-const CACHE = 'side-a-v2';
+const CACHE = 'side-a-v3';
 const SHELL = [
   "./",
   "index.html",
