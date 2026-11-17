@@ -173,6 +173,17 @@ main {
   margin-bottom: 52px;
 }
 
+.post-hero {
+  margin: -28px 0 44px;
+}
+
+.post-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
 .post-body p {
   margin-bottom: 1.5em;
 }
