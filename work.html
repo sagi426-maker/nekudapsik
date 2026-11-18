@@ -66,6 +66,9 @@
       border-radius: 10px;
       padding: 20px 22px;
     }
+    .card { display: flex; gap: 16px; align-items: flex-start; }
+    .card-icon { flex: none; width: 36px; height: 36px; margin-top: 2px; }
+    .story-img { display: block; width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px; }
     .card .num {
       display: block;
       font-size: 13px;
@@ -139,6 +142,7 @@
 
       <section class="blk">
         <div class="story">
+          <img class="story-img" src="images/supermarket-sally.webp" alt="סאלי, הרובוט מרשימת הקניות, יושב בעגלה ומסרב" loading="lazy">
           <span class="kicker">מה קרה לי בסופר</span>
           <p>עמדתי עם עגלה ריקה, וסאלי, שירות חיצוני לרשימת קניות שהשתמשנו בו כל יום, הפסיק לשלוח לי את הרשימה. הוא התחיל לגבות כסף.</p>
           <p>שלחתי הקלטה לבוט שבניתי לעצמי, זה שכבר מנהל לנו את הבית. הוא חזר עם תוכנית, ואישרתי.</p>
@@ -154,19 +158,28 @@
         <div style="height:20px"></div>
         <div class="cards">
           <div class="card">
-            <span class="num">1</span>
-            <h3>מתחילים מהכלי ולא מהעבודה</h3>
-            <p>שואלים "מה אפשר לעשות עם זה" במקום "מה חוזר אצלי כל שבוע". זה כמו לקנות מקדחה ואז לחפש קיר.</p>
+            <img class="card-icon" src="images/icons/tool-first.svg" alt="" width="36" height="36">
+            <div>
+              <span class="num">1</span>
+              <h3>מתחילים מהכלי ולא מהעבודה</h3>
+              <p>שואלים "מה אפשר לעשות עם זה" במקום "מה חוזר אצלי כל שבוע". זה כמו לקנות מקדחה ואז לחפש קיר.</p>
+            </div>
           </div>
           <div class="card">
-            <span class="num">2</span>
-            <h3>כל פעם מתחילים מאפס</h3>
-            <p>בכל שיחה מסבירים לו מחדש מי אתם, מה העסק ואיך אתם אוהבים שכותבים. הוא לא כותב גרוע - הוא פשוט לא קיבל הקשר.</p>
+            <img class="card-icon" src="images/icons/from-zero.svg" alt="" width="36" height="36">
+            <div>
+              <span class="num">2</span>
+              <h3>כל פעם מתחילים מאפס</h3>
+              <p>בכל שיחה מסבירים לו מחדש מי אתם, מה העסק ואיך אתם אוהבים שכותבים. הוא לא כותב גרוע - הוא פשוט לא קיבל הקשר.</p>
+            </div>
           </div>
           <div class="card">
-            <span class="num">3</span>
-            <h3>לומדים לבד, ונשארים לבד</h3>
-            <p>קונים מנוי, פותחים קבוצה, ואחרי שבועיים היא שקטה. אף אחד לא ישב איתכם על המקרה הספציפי שלכם.</p>
+            <img class="card-icon" src="images/icons/alone.svg" alt="" width="36" height="36">
+            <div>
+              <span class="num">3</span>
+              <h3>לומדים לבד, ונשארים לבד</h3>
+              <p>קונים מנוי, פותחים קבוצה, ואחרי שבועיים היא שקטה. אף אחד לא ישב איתכם על המקרה הספציפי שלכם.</p>
+            </div>
           </div>
         </div>
         <div class="mid-cta">
@@ -179,16 +192,25 @@
         <h2 class="sec">מה אני עושה</h2>
         <div class="cards">
           <div class="card">
-            <h3>לעסק קטן</h3>
-            <p>יושבים יחד על הדברים שחוזרים אצלכם כל שבוע, ובונים תהליך שמכיר את העסק שלכם, כך שלא צריך להסביר הכל מחדש כל פעם. לא עוד כלי ולא עוד מנוי, אלא משהו שעובד מחר בבוקר.</p>
+            <img class="card-icon" src="images/icons/small-business.svg" alt="" width="36" height="36">
+            <div>
+              <h3>לעסק קטן</h3>
+              <p>יושבים יחד על הדברים שחוזרים אצלכם כל שבוע, ובונים תהליך שמכיר את העסק שלכם, כך שלא צריך להסביר הכל מחדש כל פעם. לא עוד כלי ולא עוד מנוי, אלא משהו שעובד מחר בבוקר.</p>
+            </div>
           </div>
           <div class="card">
-            <h3>למי שרוצה ללמוד</h3>
-            <p>לומדים על דברים מהחיים שלכם, כמו הבית, הלו"ז או הפרויקט שתקוע, ולא על תרגילים. בסוף יש לכם משהו שעובד, ואת היכולת לבנות את הבא לבד.</p>
+            <img class="card-icon" src="images/icons/learn.svg" alt="" width="36" height="36">
+            <div>
+              <h3>למי שרוצה ללמוד</h3>
+              <p>לומדים על דברים מהחיים שלכם, כמו הבית, הלו"ז או הפרויקט שתקוע, ולא על תרגילים. בסוף יש לכם משהו שעובד, ואת היכולת לבנות את הבא לבד.</p>
+            </div>
           </div>
           <div class="card">
-            <h3>לארגון</h3>
-            <p>ממפים איך הצוות עובד היום עם AI, מעבירים סדנה על העבודה האמיתית שלו, ומלווים את ההטמעה עד שזה נהיה חלק מהיום.</p>
+            <img class="card-icon" src="images/icons/organization.svg" alt="" width="36" height="36">
+            <div>
+              <h3>לארגון</h3>
+              <p>ממפים איך הצוות עובד היום עם AI, מעבירים סדנה על העבודה האמיתית שלו, ומלווים את ההטמעה עד שזה נהיה חלק מהיום.</p>
+            </div>
           </div>
         </div>
       </section>
